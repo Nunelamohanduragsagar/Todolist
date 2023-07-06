@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>To-Do List Application</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    h1 {
+      text-align: center;
+    }
+    .task-input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .task-list {
+      list-style-type: none;
+      padding: 0;
+    }
+    .task-list li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px;
+      border-bottom: 1px solid #ccc;
+    }
+    .task-list li:last-child {
+      border-bottom: none;
+    }
+    .task-list li input[type="text"] {
+      border: none;
+      padding: 5px;
+    }
+    .task-list li button {
+      padding: 5px 10px;
+      margin-left: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .error {
+      color: red;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>To-Do List</h1>
+    <input id="taskInput" type="text" class="task-input" placeholder="Enter a task">
+    <button id="addTaskBtn">Add Task</button>
+    <ul id="taskList" class="task-list"></ul>
+    <p id="errorMsg" class="error"></p>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var taskInput = document.getElementById('taskInput');
+      var addTaskBtn = document.getElementById('addTaskBtn');
+      var taskList = document.getElementById('taskList');
+      var errorMsg = document.getElementById('errorMsg');
+
+      addTaskBtn.addEventListener('click', addTask);
+      taskList.addEventListener('click', handleTaskListClick);
+
+      function addTask() {
+        var taskText = taskInput.value.trim();
+
+        if (taskText !== '') {
+          var listItem = document.createElement('li');
+          var taskTextSpan = document.createElement('span');
+          var editInput = document.createElement('input');
+          var editBtn = document.createElement('button');
+          var deleteBtn = document.createElement('button');
+
+          taskTextSpan.textContent = taskText;
+          editInput.type = 'text';
+          editInput.value = taskText;
+          editBtn.textContent = 'Edit';
+          deleteBtn.textContent = 'Delete';
+
+          listItem.appendChild(taskTextSpan);
+          listItem.appendChild(editInput);
+          listItem.appendChild(editBtn);
+          listItem.appendChild(deleteBtn);
+          taskList.appendChild(listItem);
+
+          taskInput.value = '';
+          errorMsg.textContent = '';
+        } else {
+          errorMsg.textContent = 'Please enter a task.';
+        }
+      }
+
+      function handleTaskListClick(event) {
+        var target = event.target;
+
+        if (target.tagName === 'BUTTON') {
+          var listItem = target.parentNode;
+
+          if (target.textContent === 'Edit') {
+            var taskTextSpan = listItem.querySelector('span');
+            var editInput = listItem.querySelector('input[type="text"]');
+            var editBtn = listItem.querySelector('button');
+
+            taskTextSpan.textContent = '';
+            editInput.style.display = 'inline';
+            editInput.value = taskTextSpan.textContent;
+            editBtn.textContent = 'Save';
+            taskTextSpan.style.display = 'none';
+          } else if (target.textContent === 'Save') {
+            var taskTextSpan = listItem.querySelector('span');
+            var editInput = listItem.querySelector('input[type="text"]');
+            var editBtn = listItem.querySelector('button');
+
+            if (editInput.value.trim() !== '') {
+              taskTextSpan.textContent = editInput.value.trim();
+              editInput.style.display = 'none';
+              editBtn.textContent = 'Edit';
+              taskTextSpan.style.display = 'inline';
+            } else {
+              errorMsg.textContent = 'Task cannot be empty.';
+            }
+          } else if (target.textContent === 'Delete') {
+            listItem.remove();
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
